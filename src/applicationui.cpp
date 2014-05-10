@@ -54,8 +54,6 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
 
    	editMode = FALSE;
 
-   	qDebug() << "Setup finished";
-
 	///////////////////////////////////////////UI
 	/*
 	 // Picker
@@ -71,12 +69,9 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
 }
 void ApplicationUI::addTag(QString t) {
 	QString newTag = t;
-	qDebug() << "TAG" + t;
 	if (newTag != "" && fileList[0] != "") {
 		fm->addTag(newTag);
 		setPreview(fm->getPreview());
-		qDebug() << "PREVIEW " + filePreview;
-		//TODO add tag to taglist
 	}
 }
 QString ApplicationUI::getPreview() {
