@@ -18,6 +18,8 @@
 #define ApplicationUI_HPP_
 
 #include <QObject>
+#include <QMetaType>
+#include "FilenameManipulator.hpp"
 
 namespace bb
 {
@@ -39,14 +41,46 @@ class QTranslator;
 class ApplicationUI : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QStringList fileList READ getFileList WRITE setFileList
+    			NOTIFY fileListChanged)
+    Q_PROPERTY(QString filePreview READ getPreview WRITE setPreview
+    			NOTIFY previewUpdated)
+    Q_PROPERTY(bool editMode READ getEditMode WRITE setEditMode
+    			NOTIFY editModeToggled)
+
 public:
     ApplicationUI(bb::cascades::Application *app);
     virtual ~ApplicationUI() { }
+
+    Q_INVOKABLE void addTag(QString t);
+    Q_INVOKABLE bool commitFileChanges();
+
+   	QStringList getFileList();
+   	void setFileList(QStringList l);
+
+   	QString getPreview();
+   	void setPreview(QString p);
+
+   	bool getEditMode();
+    void setEditMode(bool m);
+
 private slots:
     void onSystemLanguageChanged();
+
 private:
     QTranslator* m_pTranslator;
     bb::cascades::LocaleHandler* m_pLocaleHandler;
+
+	QStringList fileList;
+	QString filePreview;
+	bool editMode;
+	FilenameManipulator *fm;
+
+signals:
+	void fileListChanged(QStringList);
+	void previewUpdated(QString);
+	void editModeToggled(bool);
+
 };
 
 #endif /* ApplicationUI_HPP_ */

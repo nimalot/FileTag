@@ -21,6 +21,8 @@
 #include <bb/cascades/AbstractPane>
 #include <bb/cascades/LocaleHandler>
 
+#include <QDebug>
+
 using namespace bb::cascades;
 
 ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
@@ -40,17 +42,75 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
     // initial load
     onSystemLanguageChanged();
 
-    // Create scene document from main.qml asset, the parent is set
-    // to ensure the document gets destroyed properly at shut down.
-    QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
+    /// UI
+    QmlDocument *q = QmlDocument::create("asset:///main.qml").parent(this);
+   	// Create root object for UI
+   	AbstractPane *root = q->createRootObject<AbstractPane>();
+   	// Set created root object as application scene
+   	app->setScene(root);
+   	// Expose this class to the qml
+   	q->setContextProperty("appui", this);
+   	/// UI End setup
 
-    // Create root object for the UI
-    AbstractPane *root = qml->createRootObject<AbstractPane>();
+   	editMode = FALSE;
 
-    // Set created root object as the application scene
-    app->setScene(root);
+   	qDebug() << "Setup finished";
+
+	///////////////////////////////////////////UI
+	/*
+	 // Picker
+	 fp = new pickers::FilePicker();
+
+	 // Setup tag list
+	 tagList_DM = new XmlDataModel();
+	 tagList_DM->setSource((const QUrl)"tags.xml");
+	 tagList_LV = ListView::create()
+	 .dataModel(tagList_DM)
+	 */
+
+}
+void ApplicationUI::addTag(QString t) {
+	QString newTag = t;
+	qDebug() << "TAG" + t;
+	if (newTag != "" && fileList[0] != "") {
+		fm->addTag(newTag);
+		setPreview(fm->getPreview());
+		qDebug() << "PREVIEW " + filePreview;
+		//TODO add tag to taglist
+	}
+}
+QString ApplicationUI::getPreview() {
+	return filePreview;
 }
 
+void ApplicationUI::setPreview(QString p) {
+	filePreview = p;
+	emit previewUpdated(p);
+}
+
+QStringList ApplicationUI::getFileList() {
+	return fileList;
+}
+void ApplicationUI::setFileList(QStringList l) {
+	fileList = l;
+	fm = new FilenameManipulator(fileList);
+	fileList[0] = fm->getCurrentNames();
+
+	emit fileListChanged(fileList);
+}
+
+bool ApplicationUI::getEditMode() {
+	return editMode;
+}
+void ApplicationUI::setEditMode(bool m) {
+	editMode = m;
+}
+bool ApplicationUI::commitFileChanges() {
+	if (!fm->doRename())
+		return FALSE;
+	else
+		return TRUE;
+}
 void ApplicationUI::onSystemLanguageChanged()
 {
     QCoreApplication::instance()->removeTranslator(m_pTranslator);

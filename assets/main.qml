@@ -1,28 +1,135 @@
 /*
- * Copyright (c) 2011-2013 BlackBerry Limited.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import bb.cascades 1.2
+import bb.cascades.pickers 1.0
 
 Page {
-    Container {
-        //Todo: fill me with QML
-        Label {
-            // Localized text with the dynamic translation and locale updates support
-            text: qsTr("Hello World") + Retranslate.onLocaleOrLanguageChanged
-            textStyle.base: SystemDefaults.TextStyles.BigText
+    property alias tbOpenSaveText: main_tb_opensave.title
+
+    titleBar: TitleBar {
+        objectName: "main_tb"
+        id: main_tb
+        title: "File Tag"
+        kind: TitleBarKind.Default
+
+        acceptAction: ActionItem {
+            id: main_tb_opensave
+            title: "Open"
+
+            onTriggered: {
+                if (appui.editMode == false) {
+                    // Open new files
+                    fp.open() // entering edit mode depends on result of file picker
+                } else {
+                    // Save changes to filename changes
+                    fnOrig_TF.text = "Saving..."
+
+                    if (appui.commitFileChanges()) {
+                        // File changes made
+                        fnOrig_TF.text = fnNew_TF.text
+                        fnNew_TF.text = "Saved"
+                        main_tb.resetDismissAction()
+                    } else {
+                        // File changes failed
+                        fnOrig_TF.text = appui.fileList[0];
+                        fnNew_TF.text = "Failed"
+                    }
+                    appui.editMode = false;
+                    main_tb_opensave.title = "Open"
+                }
+            }
         }
     }
+    Container {
+        id: main_c
+        background: Color.create("#ffffff")
+        topMargin: 20.0
+        leftMargin: 20.0
+        rightMargin: 20.0
+        topPadding: 20.0
+        leftPadding: 20.0
+        rightPadding: 20.0
+
+        layout: StackLayout {
+            orientation: LayoutOrientation.TopToBottom
+        }
+        layoutProperties: StackLayoutProperties {
+        }
+
+        TextField {
+            id: fnOrig_TF
+            text: "Nothing Selected"
+        }
+
+        TextField {
+            id: fnNew_TF
+            text: "Preview"
+            
+        }
+        Container {
+            id: tagAdder_C
+            background: Color.create("#ffffff")
+            topMargin: 20.0
+            leftMargin: 20.0
+            rightMargin: 20.0
+            layoutProperties: StackLayoutProperties {
+            }
+            layout: StackLayout {
+                orientation: LayoutOrientation.LeftToRight
+            }
+            TextField {
+                id: fnNewTag_TF
+                text: ""
+            }
+            Button {
+                id: addTag_B
+                preferredWidth: 30
+                text: "Add"
+                onClicked: {
+                    appui.previewUpdated.connect(addTag_B.onPreviewChanged)
+                    appui.addTag(fnNewTag_TF.text)
+                    fnNewTag_TF.text = ""
+                    fnNewTag_TF.requestFocus()
+                }
+                function onPreviewChanged(val) {
+                    fnNew_TF.text = val;
+                }
+            }
+        }
+    }
+    attachedObjects: [
+        ActionItem {
+            id: main_tb_cancel
+            title: "Cancel"
+
+            onTriggered: {
+                fnOrig_TF.text = "Nothing Selected"
+                fnNew_TF.text = "Preview"
+                fnNewTag_TF.resetText()
+                appui.editMode = false;
+                main_tb_opensave.title = "Open"
+                main_tb.resetDismissAction()
+            }
+        },
+        FilePicker {
+            id: fp
+            objectName: fp
+            type: FileType.Picture
+            mode: FilePickerMode.PickerMultiple
+            title: "Select Files"
+            onFileSelected: {
+                appui.fileList = selectedFiles;
+                fnOrig_TF.text = appui.fileList[0];
+                main_tb_opensave.title = "Save"
+                appui.editMode = true
+
+                main_tb.dismissAction = main_tb_cancel
+
+                //make sure to prepend "file://" when using as a source for an ImageView or MediaPlayer
+                //"file://" + selectedFiles[0];
+                console.log("FileSelected signal received : " + selectedFiles);
+            }
+        }
+    ]
 }
