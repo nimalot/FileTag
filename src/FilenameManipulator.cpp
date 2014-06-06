@@ -42,10 +42,10 @@ QString FilenameManipulator::makeTagString()
 	QString tagString = "";
 	for (int i=0; i<tagList.length(); i++)
 	{
-		if (i!=0)
+		//if (i!=0)
 			tagString = tagString + " " + tagList.at(i);
-		else
-			tagString = tagList.at(i);
+		//else
+			//tagString = tagList.at(i);
 
 	}
 
@@ -60,7 +60,7 @@ QString FilenameManipulator::getPreview()
 	for (int i=0; i<fileList.length(); i++)
 	{
 		f[i] = (fileList.at(i));
-		QString newName = f[i].baseName() + "_" + tagString + "." + f[i].completeSuffix();
+		QString newName = f[i].baseName() + tagString + "." + f[i].completeSuffix();
 		//fileListNew.replace(i, (f[i].absolutePath() + "/" + newName));
 		if (i==0)
 			previewText = "\"" + newName + "\"";
@@ -99,7 +99,7 @@ bool FilenameManipulator::doRename()
 	for (int i=0; i<fileList.length(); i++)
 	{
 		f[i] = (fileList.at(i));
-		QString newName = f[i].baseName() + "_" + tagString + "." + f[i].completeSuffix();
+		QString newName = f[i].baseName() + tagString + "." + f[i].completeSuffix();
 		fileListNew.replace(i, (f[i].absolutePath() + "/" + newName));
 	}
 
