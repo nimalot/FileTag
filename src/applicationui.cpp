@@ -67,6 +67,11 @@ ApplicationUI::ApplicationUI(bb::cascades::Application *app) :
 	 */
 
 }
+
+void ApplicationUI::test(QString s)
+{
+	qDebug() << "TEST: " + s;
+}
 void ApplicationUI::addTag(QString t) {
 	QString newTag = t;
 	if (newTag != "" && fileList[0] != "") {

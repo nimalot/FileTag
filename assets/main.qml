@@ -97,7 +97,69 @@ Page {
                 }
             }
         }
+        Container {
+            background: Color.White
+            ListView {
+                //rootIndexPath: [1]
+                dataModel: XmlDataModel { source: "tags.xml" }
+                onTriggered: {
+//                    if (isSelected(indexPath))
+//                    	clearSelection(indexPath)
+//                    else
+//                    	select(indexPath)
+                    appui.test("foo" + indexPath)
+
+                }
+                function itemChecked(data, isChecked){
+                    if (isChecked){
+                        appui.previewUpdated.connect(addTag_B.onPreviewChanged)
+                    	appui.test("ADD " + data)
+                    	
+                        appui.addTag(data)
+                    } else {
+                        appui.test("REMOVE " + data)
+                    }
+                }
+                listItemComponents: [
+                    ListItemComponent {
+                        type:"item"
+                        Container {
+                            id: itemCont
+                            layout: StackLayout {
+                                orientation: LayoutOrientation.LeftToRight
+                            }
+                            topPadding: 10.0
+                            rightPadding: 10.0
+                            leftPadding: 10.0
+                            bottomPadding: 10.0
+                            CheckBox {
+                                // Determine whether the CheckBox should be checked
+                                // according to a value in the data model
+                                checked: ListItemData.checked
+                                
+                                onCheckedChanged: {
+                                    //ListItemData.checked = 
+                                    itemCont.ListItem.view.itemChecked(ListItemData.title, checked)
+                                }
+                            }
+                            Label {
+                                text: ListItemData.title
+                                
+                                // Apply a text style to create a title-sized font
+                                // with normal weight
+                                textStyle {
+                                    base: SystemDefaults.TextStyles.TitleText
+                                    fontWeight: FontWeight.Normal
+                                }
+                            }
+                        } // end of Container
+                    }
+                ]
+            }
+        }
     }
+    
+    
     attachedObjects: [
         ActionItem {
             id: main_tb_cancel
@@ -114,7 +176,6 @@ Page {
         },
         FilePicker {
             id: fp
-            objectName: fp
             type: FileType.Picture
             mode: FilePickerMode.PickerMultiple
             title: "Select Files"
@@ -125,6 +186,7 @@ Page {
                 appui.editMode = true
 
                 main_tb.dismissAction = main_tb_cancel
+                fnNew_TF.text = "Preview"
 
                 //make sure to prepend "file://" when using as a source for an ImageView or MediaPlayer
                 //"file://" + selectedFiles[0];

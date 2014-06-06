@@ -54,6 +54,7 @@ public:
 
     Q_INVOKABLE void addTag(QString t);
     Q_INVOKABLE bool commitFileChanges();
+    Q_INVOKABLE void test(QString s);
 
    	QStringList getFileList();
    	void setFileList(QStringList l);
