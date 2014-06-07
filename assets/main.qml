@@ -117,11 +117,14 @@ Page {
                 function itemChecked(data, isChecked){
                     if (isChecked){
                         appui.previewUpdated.connect(addTag_B.onPreviewChanged)
-                    	appui.test("ADD " + data)
                     	
+                        //add this item to the tag List
+                        appui.test("ADD " + data)
                         appui.addTag(data)
                     } else {
                         appui.test("REMOVE " + data)
+                        appui.removeTag(data)
+                        
                     }
                 }
                 listItemComponents: [
@@ -155,6 +158,9 @@ Page {
                                     base: SystemDefaults.TextStyles.TitleText
                                     fontWeight: FontWeight.Normal
                                 }
+                                onTouch: {
+                                    //itemCont.ListItem.CheckBox.toggle()
+                                }
                             }
                         } // end of Container
                     }
@@ -178,6 +184,17 @@ Page {
                 main_tb.resetDismissAction()
             }
         },
+        GroupDataModel {
+            id: dataModel
+        },
+        DataSource {
+            id: tagDataSource
+            source: "tags.xml"
+            
+            onDataLoaded: {
+                dataModel.insertList(data);
+            }
+        },
         XmlDataModel {
           id: tagXmlDataModel  
           source: "tags.xml"
@@ -197,9 +214,10 @@ Page {
                 main_tb.dismissAction = main_tb_cancel
                 fnNew_TF.text = "Preview"
                 
-                //tagListV.listMode = false;
+                
                 tagListV.resetDataModel()
                 tagListV.setDataModel(tagXmlDataModel)
+                //dataSource.load();
                 
                 //make sure to prepend "file://" when using as a source for an ImageView or MediaPlayer
                 //"file://" + selectedFiles[0];

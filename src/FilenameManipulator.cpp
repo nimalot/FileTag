@@ -37,6 +37,9 @@ void FilenameManipulator::addTag(QString tagText)
 }
 void FilenameManipulator::removeTag(QString tagText)
 {
+	//remove duplicates?
+	tagList.removeOne(tagText);
+
 
 }
 QString FilenameManipulator::makeTagString()
