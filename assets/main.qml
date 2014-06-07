@@ -3,6 +3,7 @@
 
 import bb.cascades 1.2
 import bb.cascades.pickers 1.0
+import bb.data 1.0
 
 Page {
     property alias tbOpenSaveText: main_tb_opensave.title
@@ -43,7 +44,7 @@ Page {
     }
     Container {
         id: main_c
-        background: Color.create("#ffffff")
+        //background: Color.create("#ffffff") //this looks gash on amoled screens which default to black
         topMargin: 20.0
         leftMargin: 20.0
         rightMargin: 20.0
@@ -69,7 +70,7 @@ Page {
         }
         Container {
             id: tagAdder_C
-            background: Color.create("#ffffff")
+            //background: Color.create("#ffffff")
             topMargin: 20.0
             leftMargin: 20.0
             rightMargin: 20.0
@@ -98,11 +99,14 @@ Page {
             }
         }
         Container {
-            background: Color.White
+            //background: Color.White
             ListView {
+                id:tagListV
                 //rootIndexPath: [1]
-                dataModel: XmlDataModel { source: "tags.xml" }
+                dataModel: tagXmlDataModel
+                //property bool listMode: false
                 onTriggered: {
+                    //this triggers based on the titles etc
 //                    if (isSelected(indexPath))
 //                    	clearSelection(indexPath)
 //                    else
@@ -174,6 +178,11 @@ Page {
                 main_tb.resetDismissAction()
             }
         },
+        XmlDataModel {
+          id: tagXmlDataModel  
+          source: "tags.xml"
+
+        },
         FilePicker {
             id: fp
             type: FileType.Picture
@@ -187,7 +196,11 @@ Page {
 
                 main_tb.dismissAction = main_tb_cancel
                 fnNew_TF.text = "Preview"
-
+                
+                //tagListV.listMode = false;
+                tagListV.resetDataModel()
+                tagListV.setDataModel(tagXmlDataModel)
+                
                 //make sure to prepend "file://" when using as a source for an ImageView or MediaPlayer
                 //"file://" + selectedFiles[0];
                 console.log("FileSelected signal received : " + selectedFiles);

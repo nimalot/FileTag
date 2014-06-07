@@ -1,0 +1,11 @@
+<model>
+  <header title="Recent">
+    <item title="Summer" />
+    <item title="Spring" />
+  </header>
+  <header title="Frequent">
+    <item title="Sej" />
+    <item title="London" />
+    <item title="Tunes" />
+  </header>
+</model>

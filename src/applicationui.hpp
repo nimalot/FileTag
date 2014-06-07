@@ -53,6 +53,7 @@ public:
     virtual ~ApplicationUI() { }
 
     Q_INVOKABLE void addTag(QString t);
+    Q_INVOKABLE void removeTag(QString t);
     Q_INVOKABLE bool commitFileChanges();
     Q_INVOKABLE void test(QString s);
 

@@ -79,6 +79,13 @@ void ApplicationUI::addTag(QString t) {
 		setPreview(fm->getPreview());
 	}
 }
+void ApplicationUI::removeTag(QString t) {
+	QString removeMe = t;
+	if (removeMe != "" && fileList[0] != "") {
+		fm->removeTag(removeMe);
+		setPreview(fm->getPreview());
+	}
+}
 QString ApplicationUI::getPreview() {
 	return filePreview;
 }

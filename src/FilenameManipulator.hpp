@@ -19,6 +19,7 @@ public:
 	virtual ~FilenameManipulator();
 	bool doRename(void);
 	void addTag(QString tagText);
+	void removeTag(QString tagText);
 	QString getCurrentNames();
 	QString getPreview();
 	QStringList getRecentTags();

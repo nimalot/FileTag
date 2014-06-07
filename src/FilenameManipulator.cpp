@@ -35,7 +35,10 @@ void FilenameManipulator::addTag(QString tagText)
 {
 	tagList.append(tagText);
 }
+void FilenameManipulator::removeTag(QString tagText)
+{
 
+}
 QString FilenameManipulator::makeTagString()
 {
 	// Append all tag's to each other to create a single string
