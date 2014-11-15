@@ -1,0 +1,10 @@
+<model>
+  <header title="Recent">
+    <item title="Summer" />
+    <item title="Kim" />
+  </header>
+  <header title="Frequent">
+    <item title="Sej" />
+    <item title="London" />
+  </header>
+</model>
